@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TMET School Assessment Analysis — Jennifer Nwabueze</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --charcoal: #1C1714;
+      --charcoal-mid: #2A2320;
+      --charcoal-light: #352E2B;
+      --emerald: #00A878;
+      --emerald-dim: #007d5a;
+      --emerald-glow: rgba(0,168,120,0.12);
+      --nude: #C4A882;
+      --nude-dim: #a08a68;
+      --white: #F5F1EC;
+      --muted: #8a7f79;
+      --border: rgba(196,168,130,0.15);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--charcoal);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 1.2rem 4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(28,23,20,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      color: var(--nude);
+      text-decoration: none;
+      letter-spacing: 0.04em;
+    }
+    .nav-back {
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-back:hover { color: var(--emerald); }
+    .nav-back::before { content: '← '; }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 8rem 4rem 5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 80% 30%, rgba(0,168,120,0.07) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 60% at 10% 80%, rgba(196,168,130,0.05) 0%, transparent 60%);
+    }
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(196,168,130,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(196,168,130,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+    .hero-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--emerald);
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.6s ease 0.2s forwards;
+    }
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.8rem, 6vw, 5.5rem);
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      max-width: 14ch;
+      opacity: 0;
+      animation: fadeUp 0.7s ease 0.35s forwards;
+    }
+    .hero-title em {
+      font-style: italic;
+      color: var(--emerald);
+    }
+    .hero-subtitle {
+      margin-top: 1.8rem;
+      font-size: 1.05rem;
+      color: var(--nude);
+      max-width: 52ch;
+      font-weight: 400;
+      opacity: 0;
+      animation: fadeUp 0.7s ease 0.5s forwards;
+    }
+    .hero-meta {
+      margin-top: 3rem;
+      display: flex;
+      gap: 3rem;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.7s ease 0.65s forwards;
+    }
+    .hero-meta-item { }
+    .hero-meta-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.3rem;
+    }
+    .hero-meta-value {
+      font-size: 0.92rem;
+      color: var(--white);
+      font-weight: 500;
+    }
+    .hero-scroll {
+      position: absolute;
+      bottom: 2.5rem;
+      right: 4rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      writing-mode: vertical-rl;
+      opacity: 0;
+      animation: fadeIn 1s ease 1.2s forwards;
+    }
+    .hero-scroll::after {
+      content: '';
+      display: block;
+      width: 1px;
+      height: 60px;
+      background: linear-gradient(to bottom, var(--muted), transparent);
+      margin: 0.8rem auto 0;
+    }
+
+    /* ── SECTIONS ── */
+    section {
+      padding: 6rem 4rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .section-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--emerald);
+      margin-bottom: 1rem;
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 2rem;
+    }
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── OVERVIEW GRID ── */
+    .overview-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      margin-top: 2.5rem;
+    }
+    .overview-block p {
+      font-size: 1rem;
+      color: rgba(245,241,236,0.8);
+      line-height: 1.8;
+    }
+    .overview-block p + p { margin-top: 1rem; }
+
+    /* ── TOOLS ── */
+    .tools-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.7rem;
+      margin-top: 2rem;
+    }
+    .tool-chip {
+      padding: 0.45rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      color: var(--nude);
+      background: rgba(196,168,130,0.04);
+      transition: all 0.2s;
+    }
+    .tool-chip:hover {
+      border-color: var(--emerald);
+      color: var(--emerald);
+      background: var(--emerald-glow);
+    }
+    .tool-chip.primary {
+      border-color: rgba(0,168,120,0.4);
+      color: var(--emerald);
+      background: var(--emerald-glow);
+    }
+
+    /* ── DASHBOARD SECTION ── */
+    .dashboard-section {
+      background: var(--charcoal-mid);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 6rem 4rem;
+    }
+    .dashboard-section > .inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .dashboard-intro {
+      display: grid;
+      grid-template-columns: 1fr 1.8fr;
+      gap: 4rem;
+      align-items: start;
+      margin-bottom: 4rem;
+    }
+    .dashboard-intro-text p {
+      color: rgba(245,241,236,0.75);
+      line-height: 1.8;
+      font-size: 0.97rem;
+    }
+    .dashboard-intro-text p + p { margin-top: 1rem; }
+
+    .dashboard-carousel {
+      display: flex;
+      flex-direction: column;
+      gap: 3rem;
+    }
+    .dash-card {
+      position: relative;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      background: var(--charcoal-light);
+      transition: border-color 0.3s;
+    }
+    .dash-card:hover { border-color: rgba(0,168,120,0.35); }
+    .dash-card img {
+      width: 100%;
+      display: block;
+      transition: transform 0.4s ease;
+    }
+    .dash-card:hover img { transform: scale(1.01); }
+    .dash-card-caption {
+      padding: 1.2rem 1.5rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .dash-card-caption-title {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--white);
+    }
+    .dash-card-caption-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+    }
+
+    /* ── FINDINGS ── */
+    .findings-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+    .finding-card {
+      padding: 2rem 1.8rem;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      background: var(--charcoal-mid);
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .finding-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--emerald);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+    .finding-card:hover::before { transform: scaleX(1); }
+    .finding-card:hover {
+      border-color: rgba(0,168,120,0.2);
+      transform: translateY(-3px);
+    }
+    .finding-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      margin-bottom: 0.8rem;
+    }
+    .finding-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--nude);
+      margin-bottom: 1rem;
+      line-height: 1.3;
+    }
+    .finding-body {
+      font-size: 0.88rem;
+      color: rgba(245,241,236,0.7);
+      line-height: 1.7;
+    }
+    .finding-body ul {
+      padding-left: 1.1rem;
+    }
+    .finding-body li { margin-bottom: 0.4rem; }
+
+    /* ── SPOTLIGHT ── */
+    .spotlight {
+      background: linear-gradient(135deg, var(--charcoal-light) 0%, rgba(0,168,120,0.06) 100%);
+      border: 1px solid rgba(0,168,120,0.3);
+      border-radius: 4px;
+      padding: 3rem 3.5rem;
+      margin: 3rem 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .spotlight::after {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 200px; height: 200px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,168,120,0.1) 0%, transparent 70%);
+    }
+    .spotlight-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--emerald);
+      margin-bottom: 1.2rem;
+    }
+    .spotlight-stat {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 900;
+      color: var(--white);
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+    .spotlight-stat span { color: var(--emerald); }
+    .spotlight-desc {
+      font-size: 1rem;
+      color: var(--nude);
+      max-width: 60ch;
+      margin-top: 0.8rem;
+    }
+    .spotlight-context {
+      margin-top: 1.5rem;
+      font-size: 0.9rem;
+      color: rgba(245,241,236,0.65);
+      max-width: 70ch;
+      line-height: 1.8;
+    }
+
+    /* ── CONCLUSIONS ── */
+    .conclusions-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+    .conclusion-card {
+      padding: 2.2rem;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      background: var(--charcoal-mid);
+      transition: border-color 0.3s;
+    }
+    .conclusion-card:hover { border-color: rgba(196,168,130,0.3); }
+    .conclusion-card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--nude);
+      margin-bottom: 1rem;
+      padding-bottom: 0.8rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .conclusion-card p {
+      font-size: 0.88rem;
+      color: rgba(245,241,236,0.72);
+      line-height: 1.75;
+    }
+    .conclusion-card p + p { margin-top: 0.8rem; }
+
+    /* ── RECOMMENDATIONS ── */
+    .recs-section {
+      background: var(--charcoal-mid);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 6rem 4rem;
+    }
+    .recs-section > .inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .recs-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+    .rec-card {
+      padding: 2rem;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      background: var(--charcoal);
+      display: flex;
+      gap: 1.5rem;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .rec-card:hover {
+      border-color: rgba(0,168,120,0.25);
+      transform: translateY(-2px);
+    }
+    .rec-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 900;
+      color: rgba(0,168,120,0.2);
+      line-height: 1;
+      flex-shrink: 0;
+      width: 2.5rem;
+    }
+    .rec-content {}
+    .rec-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: 0.5rem;
+    }
+    .rec-body {
+      font-size: 0.84rem;
+      color: rgba(245,241,236,0.65);
+      line-height: 1.7;
+    }
+
+    /* ── PIPELINE ── */
+    .pipeline-section {
+      margin-top: 0;
+      padding: 6rem 4rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .pipeline-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      margin-top: 3rem;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .pipeline-step {
+      padding: 2.5rem 2rem;
+      border-right: 1px solid var(--border);
+      position: relative;
+      transition: background 0.3s;
+    }
+    .pipeline-step:last-child { border-right: none; }
+    .pipeline-step:hover { background: rgba(196,168,130,0.03); }
+    .step-layer {
+      display: inline-block;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.7rem;
+      border-radius: 2px;
+      margin-bottom: 1.2rem;
+    }
+    .step-layer.bronze {
+      color: #cd7f32;
+      background: rgba(205,127,50,0.12);
+      border: 1px solid rgba(205,127,50,0.25);
+    }
+    .step-layer.silver {
+      color: #c0c0c0;
+      background: rgba(192,192,192,0.1);
+      border: 1px solid rgba(192,192,192,0.2);
+    }
+    .step-layer.gold {
+      color: #FFD700;
+      background: rgba(255,215,0,0.08);
+      border: 1px solid rgba(255,215,0,0.2);
+    }
+    .step-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 0.8rem;
+    }
+    .step-items {
+      list-style: none;
+    }
+    .step-items li {
+      font-size: 0.83rem;
+      color: rgba(245,241,236,0.65);
+      padding: 0.3rem 0;
+      border-bottom: 1px solid rgba(196,168,130,0.07);
+      padding-left: 1rem;
+      position: relative;
+    }
+    .step-items li::before {
+      content: '·';
+      position: absolute;
+      left: 0;
+      color: var(--emerald);
+    }
+    .step-items li:last-child { border-bottom: none; }
+
+    /* ── FOOTER ── */
+    .project-footer {
+      border-top: 1px solid var(--border);
+      padding: 3rem 4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+    .footer-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.85rem;
+      transition: color 0.2s;
+    }
+    .footer-back:hover { color: var(--emerald); }
+    .footer-next {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      text-decoration: none;
+      padding: 0.8rem 1.8rem;
+      border: 1px solid rgba(0,168,120,0.4);
+      color: var(--emerald);
+      font-size: 0.85rem;
+      font-weight: 500;
+      border-radius: 2px;
+      transition: all 0.2s;
+    }
+    .footer-next:hover {
+      background: var(--emerald);
+      color: var(--charcoal);
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      nav { padding: 1rem 1.5rem; }
+      .hero { padding: 7rem 1.5rem 4rem; }
+      section { padding: 4rem 1.5rem; }
+      .dashboard-section, .recs-section { padding: 4rem 1.5rem; }
+      .overview-grid, .conclusions-grid, .recs-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .dashboard-intro { grid-template-columns: 1fr; gap: 2rem; }
+      .findings-grid { grid-template-columns: 1fr; }
+      .pipeline-steps { grid-template-columns: 1fr; }
+      .pipeline-step { border-right: none; border-bottom: 1px solid var(--border); }
+      .pipeline-step:last-child { border-bottom: none; }
+      .project-footer { padding: 2rem 1.5rem; flex-direction: column; align-items: flex-start; }
+      .hero-scroll { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="index.html" class="nav-logo">Jennifer Nwabueze</a>
+    <a href="index.html#projects" class="nav-back">All Projects</a>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <p class="hero-tag">Project Case Study · Education Data</p>
+    <h1 class="hero-title">TMET School <em>Assessment</em> Analysis</h1>
+    <p class="hero-subtitle">End-to-end analysis of anonymised assessment data for 365 pupils across 6 year groups — from raw Excel files to Databricks Medallion pipeline to a 3-page Power BI dashboard.</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item">
+        <p class="hero-meta-label">Client</p>
+        <p class="hero-meta-value">The Mead Educational Trust</p>
+      </div>
+      <div class="hero-meta-item">
+        <p class="hero-meta-label">Pupils Analysed</p>
+        <p class="hero-meta-value">365 across Years 1–6</p>
+      </div>
+      <div class="hero-meta-item">
+        <p class="hero-meta-label">Deliverables</p>
+        <p class="hero-meta-value">Excel · Power BI · Databricks</p>
+      </div>
+      <div class="hero-meta-item">
+        <p class="hero-meta-label">Assessment Terms</p>
+        <p class="hero-meta-value">Autumn & Spring</p>
+      </div>
+    </div>
+    <span class="hero-scroll">Scroll</span>
+  </div>
+
+  <!-- OVERVIEW -->
+  <section class="reveal">
+    <p class="section-label">01 — The Brief</p>
+    <h2 class="section-title">Problem & Approach</h2>
+    <div class="divider"></div>
+    <div class="overview-grid">
+      <div class="overview-block">
+        <p>The Mead Educational Trust needed a clear, evidence-based picture of pupil attainment and progress across their primary school. The brief was to analyse anonymised assessment data for 365 pupils across Years 1 to 6, covering Reading, Writing and Mathematics performance in both the Autumn and Spring terms.</p>
+        <p>The analysis needed to identify attainment patterns, progress trends, and any gaps across key pupil characteristics — Pupil Premium (PP), English as an Additional Language (EAL), gender, teaching group and year group.</p>
+      </div>
+      <div class="overview-block">
+        <p>The task required building a complete analytical solution: a structured Excel workbook for data preparation, a multi-page Power BI dashboard for interactive exploration, and a full Medallion Architecture pipeline in Azure Databricks to support scalable, layered data transformation.</p>
+        <p>All data was handled in full compliance with anonymisation requirements, and findings were presented with actionable recommendations for the Trust.</p>
+      </div>
+    </div>
+    <div class="tools-row" style="margin-top:2.5rem;">
+      <span class="tool-chip primary">Power BI</span>
+      <span class="tool-chip primary">Azure Databricks</span>
+      <span class="tool-chip primary">Excel</span>
+      <span class="tool-chip">DAX</span>
+      <span class="tool-chip">Power Query</span>
+      <span class="tool-chip">Medallion Architecture</span>
+      <span class="tool-chip">Delta Lake</span>
+      <span class="tool-chip">VLOOKUP</span>
+      <span class="tool-chip">Pivot Tables</span>
+      <span class="tool-chip">M Language</span>
+      <span class="tool-chip">Data Governance</span>
+      <span class="tool-chip">GDPR Compliance</span>
+    </div>
+  </section>
+
+  <!-- DASHBOARD -->
+  <div class="dashboard-section">
+    <div class="inner">
+      <div class="reveal">
+        <p class="section-label">02 — The Dashboard</p>
+        <h2 class="section-title">Power BI — 3-Page Interactive Dashboard</h2>
+        <div class="divider"></div>
+      </div>
+      <div class="dashboard-intro reveal">
+        <div>
+          <p class="section-label" style="margin-top:2rem;">What was built</p>
+        </div>
+        <div class="dashboard-intro-text">
+          <p>The dashboard was built across three focused pages, each serving a distinct analytical purpose. Dynamic slicers allow filtering by Year Group, Teaching Group, Pupil Premium status, EAL status, Gender and Term — enabling the Trust to interrogate any combination of pupil characteristics instantly.</p>
+          <p>KPI cards surface headline figures at a glance. Clustered bar charts break down ARE status (Above / At / Below) across all year groups for each subject. Page 2 brings all three subjects together into a combined view for Autumn and Spring side by side. Page 3 focuses on progress — average steps progress by year group, EAL status, Pupil Premium status, and subject.</p>
+        </div>
+      </div>
+      <div class="dashboard-carousel">
+        <div class="dash-card reveal">
+          <img src="Screenshot_2026-06-04_161351.png" alt="Page 1 — Primary School Assessment Analysis Dashboard showing ARE status by year group for Reading, Maths and Writing" loading="lazy" />
+          <div class="dash-card-caption">
+            <span class="dash-card-caption-title">Page 1 — ARE Status by Subject & Year Group</span>
+            <span class="dash-card-caption-num">01 / 03</span>
+          </div>
+        </div>
+        <div class="dash-card reveal">
+          <img src="Screenshot_2026-06-04_161413.png" alt="Page 2 — All 3 Subjects Combined ARE Status Analysis with Autumn and Spring side by side" loading="lazy" />
+          <div class="dash-card-caption">
+            <span class="dash-card-caption-title">Page 2 — All 3 Subjects Combined · Autumn vs Spring</span>
+            <span class="dash-card-caption-num">02 / 03</span>
+          </div>
+        </div>
+        <div class="dash-card reveal">
+          <img src="Screenshot_2026-06-04_161442.png" alt="Page 3 — Progress Analysis showing average steps progress by year group, EAL, Pupil Premium and subject" loading="lazy" />
+          <div class="dash-card-caption">
+            <span class="dash-card-caption-title">Page 3 — Progress Analysis by Year Group & Characteristics</span>
+            <span class="dash-card-caption-num">03 / 03</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KEY FINDINGS -->
+  <section>
+    <div class="reveal">
+      <p class="section-label">03 — Key Findings</p>
+      <h2 class="section-title">What the Data Revealed</h2>
+      <div class="divider"></div>
+    </div>
+
+    <!-- SPOTLIGHT STAT -->
+    <div class="spotlight reveal">
+      <p class="spotlight-label">Critical Finding — Pupil Premium Gap</p>
+      <p class="spotlight-stat"><span>0%</span> Above ARE</p>
+      <p class="spotlight-desc">Year 4 Pupil Premium pupils — All 3 Subjects Combined, both Autumn and Spring terms.</p>
+      <p class="spotlight-context">This was the most pronounced attainment gap in the dataset. Non-PP pupils in Year 4 achieved 19.5% (Autumn) and 22% (Spring) Above ARE. In Year 6, the gap widened further: 46.4% of non-PP pupils achieved Above ARE compared to just 25% of PP pupils — a 21.4 percentage point gap. Despite this, PP pupils' average steps progress (1.2) was in line with the school average, indicating the gap is rooted in baseline attainment rather than in-year progress rates.</p>
+    </div>
+
+    <div class="findings-grid">
+      <div class="finding-card reveal">
+        <p class="finding-num">Pattern 01</p>
+        <h3 class="finding-title">Year 6 leads, Year 2 struggles</h3>
+        <div class="finding-body">
+          <ul>
+            <li>Year 6 is the highest Above ARE year group across ALL subjects — Reading, Writing and Maths</li>
+            <li>Year 2 records the lowest Above ARE in Reading (15.6%) and Maths (10.9%)</li>
+            <li>Year 3 is the weakest year group in Writing (13.3%)</li>
+            <li>The dip between Years 2–3 may indicate a transition challenge as curriculum content advances</li>
+          </ul>
+        </div>
+      </div>
+      <div class="finding-card reveal">
+        <p class="finding-num">Pattern 02</p>
+        <h3 class="finding-title">Pupil Premium attainment gap</h3>
+        <div class="finding-body">
+          <ul>
+            <li>PP pupils consistently achieve lower Above ARE percentages across several year groups</li>
+            <li>Year 4 PP pupils: 0% Above ARE in all 3 subjects in both terms — the most critical finding</li>
+            <li>Year 6 gap: 46.4% non-PP vs 25% PP Above ARE — a 21.4 percentage point difference</li>
+            <li>PP progress rate (1.2 steps) matches the school average, so the gap is baseline-driven</li>
+          </ul>
+        </div>
+      </div>
+      <div class="finding-card reveal">
+        <p class="finding-num">Pattern 03</p>
+        <h3 class="finding-title">EAL pupils performing strongly</h3>
+        <div class="finding-body">
+          <ul>
+            <li>EAL pupils outperform non-EAL in Year 1 Spring: 30.6% vs 0% Above ARE</li>
+            <li>EAL average progress is slightly higher: 1.2 vs non-EAL at 1.1</li>
+            <li>Suggests effective support provision or strong baseline performance within this cohort</li>
+          </ul>
+        </div>
+      </div>
+      <div class="finding-card reveal">
+        <p class="finding-num">Pattern 04</p>
+        <h3 class="finding-title">Gender differences</h3>
+        <div class="finding-body">
+          <ul>
+            <li>Male pupils generally achieve higher Above ARE percentages — Year 1 (29.4% vs 20% female), Year 6 (40% vs 30%)</li>
+            <li>Female pupils demonstrate more consistent progress across year groups</li>
+            <li>Year 1 males record the highest single-year average progress at 1.8 steps</li>
+          </ul>
+        </div>
+      </div>
+      <div class="finding-card reveal">
+        <p class="finding-num">Pattern 05</p>
+        <h3 class="finding-title">Progress patterns</h3>
+        <div class="finding-body">
+          <ul>
+            <li>Year 1 is the strongest progressing year group (1.6 average steps overall)</li>
+            <li>Year 3 records the lowest average progress — may require closer monitoring</li>
+            <li>School's overall average progress: 1.2 steps between Autumn and Spring</li>
+            <li>Both PP and non-PP pupils average 1.2 steps — progress is equitable, attainment is not</li>
+          </ul>
+        </div>
+      </div>
+      <div class="finding-card reveal">
+        <p class="finding-num">Pattern 06</p>
+        <h3 class="finding-title">Attainment vs progress distinction</h3>
+        <div class="finding-body">
+          <ul>
+            <li>Overall, variation in attainment between year groups is more pronounced than variation in progress rates</li>
+            <li>Specific year groups and pupil characteristics show persistent attainment gaps</li>
+            <li>This distinction is critical — it shapes where targeted intervention should be focused</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONCLUSIONS -->
+  <section style="padding-top:0;">
+    <div class="reveal">
+      <p class="section-label">04 — Conclusions</p>
+      <h2 class="section-title">Evidence-Based Conclusions</h2>
+      <div class="divider"></div>
+    </div>
+    <div class="conclusions-grid">
+      <div class="conclusion-card reveal">
+        <p class="conclusion-card-title">Conclusion 1 — Attainment Patterns Across Year Groups</p>
+        <p>Year 6 records the highest proportion of pupils working above ARE in Spring across Reading (35%), Writing (35%) and Mathematics (35%). This may reflect particularly strong teaching in upper year groups or the cumulative impact of learning over time.</p>
+        <p>In contrast, Year 2 records the lowest Above ARE rates in Reading and Mathematics, while Year 3 records the weakest Writing performance. The dip between Years 2 and 3 may suggest a transition challenge as pupils move into more advanced curriculum content.</p>
+        <p>Year 1 demonstrates the strongest average steps progress between terms, indicating strong early development — though Year 3's lower progress rate warrants closer monitoring.</p>
+      </div>
+      <div class="conclusion-card reveal">
+        <p class="conclusion-card-title">Conclusion 2 — Attainment Gap for Pupil Premium Pupils</p>
+        <p>PP pupils consistently achieve lower Above ARE percentages compared to non-PP pupils across several year groups. The most pronounced gap appears in Year 4, where PP pupils recorded 0% Above ARE across all three subjects combined in both terms, compared to 19.5% (Autumn) and 22% (Spring) for non-PP pupils.</p>
+        <p>Critically, the average steps progress for PP pupils (1.2) is in line with the school average. This suggests PP pupils are progressing at a similar rate to their peers, but from a lower starting point — meaning the attainment gap is more strongly linked to baseline attainment than to differences in in-year progress.</p>
+      </div>
+      <div class="conclusion-card reveal" style="grid-column: 1 / -1;">
+        <p class="conclusion-card-title">Conclusion 3 — EAL, Gender & Cross-School Variation</p>
+        <p>EAL pupils perform comparatively strongly in several year groups. In Year 1 Spring, 30.6% of EAL pupils achieved Above ARE compared to 0% of non-EAL pupils. EAL pupils also demonstrate slightly higher average steps progress (1.2 vs 1.1), suggesting effective support provision or strong baseline performance within this cohort.</p>
+        <p>Gender differences are evident: male pupils generally achieve higher Above ARE percentages, particularly in Year 1 (29.4% male vs 20% female) and Year 6 (40% male vs 30% female). However, female pupils demonstrate more consistent progress across year groups.</p>
+        <p>Overall, variation in attainment between year groups is more pronounced than variation in progress rates. Specific year groups and pupil characteristics show persistent attainment gaps that merit further investigation and targeted intervention.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- RECOMMENDATIONS -->
+  <div class="recs-section">
+    <div class="inner">
+      <div class="reveal">
+        <p class="section-label">05 — Recommendations</p>
+        <h2 class="section-title">Actions for the Trust</h2>
+        <div class="divider"></div>
+      </div>
+      <div class="recs-grid">
+        <div class="rec-card reveal">
+          <div class="rec-number">1</div>
+          <div class="rec-content">
+            <p class="rec-title">Targeted Pupil Premium intervention — especially Year 4</p>
+            <p class="rec-body">The 0% Above ARE finding for Year 4 PP pupils across all three subjects in both terms requires urgent, targeted support. Given that PP pupils are progressing at the same rate as peers, interventions should focus on baseline attainment — earlier identification and tailored catch-up provision.</p>
+          </div>
+        </div>
+        <div class="rec-card reveal">
+          <div class="rec-number">2</div>
+          <div class="rec-content">
+            <p class="rec-title">Investigate the Year 2–3 transition dip</p>
+            <p class="rec-body">Year 2 and Year 3 consistently record the lowest Above ARE rates in Reading, Maths and Writing respectively. The Trust should examine curriculum transition structures between KS1 and lower KS2 to understand whether content difficulty, teaching approach or pupil readiness is driving the dip.</p>
+          </div>
+        </div>
+        <div class="rec-card reveal">
+          <div class="rec-number">3</div>
+          <div class="rec-content">
+            <p class="rec-title">Share EAL strategies across year groups</p>
+            <p class="rec-body">EAL pupils are outperforming expectations in Year 1 Spring and demonstrating above-average progress overall. The Trust should identify and document the approaches being used with this cohort and explore whether similar strategies can be replicated across other year groups and pupil groups.</p>
+          </div>
+        </div>
+        <div class="rec-card reveal">
+          <div class="rec-number">4</div>
+          <div class="rec-content">
+            <p class="rec-title">Monitor Year 3 progress closely</p>
+            <p class="rec-body">Year 3 records the lowest average progress in the school. This should be investigated further — whether it reflects teaching group composition, subject-specific challenges, or a structural issue in the Year 3 curriculum delivery — to prevent the gap from widening into upper KS2.</p>
+          </div>
+        </div>
+        <div class="rec-card reveal">
+          <div class="rec-number">5</div>
+          <div class="rec-content">
+            <p class="rec-title">Reduce the PP attainment gap in Year 6</p>
+            <p class="rec-body">The 21.4 percentage point gap between PP and non-PP pupils in Year 6 is significant, particularly given the proximity to KS2 SATs. Focused booster sessions, mentoring or small group provision should be considered to close this gap ahead of national assessments.</p>
+          </div>
+        </div>
+        <div class="rec-card reveal">
+          <div class="rec-number">6</div>
+          <div class="rec-content">
+            <p class="rec-title">Continue tracking progress equity, not just attainment</p>
+            <p class="rec-body">The finding that progress rates are equitable while attainment gaps persist is nuanced and important. The Trust should continue monitoring both metrics separately in future assessments. Closing the attainment gap will require addressing baseline starting points — not simply improving in-year progress for all pupils equally.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DATABRICKS PIPELINE -->
+  <section class="pipeline-section reveal">
+    <p class="section-label">06 — Data Engineering</p>
+    <h2 class="section-title">Azure Databricks — Medallion Architecture Pipeline</h2>
+    <div class="divider"></div>
+    <p style="margin-top:1.8rem; color:rgba(245,241,236,0.75); max-width:70ch; font-size:0.97rem; line-height:1.8;">
+      Beyond the dashboard, a full Medallion Architecture pipeline was built in Azure Databricks using Delta Lake — demonstrating how this analysis could scale to support ongoing, automated reporting at trust level. The pipeline transforms raw Excel files through structured layers to clean, aggregated Gold views.
+    </p>
+    <div class="pipeline-steps">
+      <div class="pipeline-step">
+        <span class="step-layer bronze">Bronze Layer</span>
+        <h3 class="step-title">Raw Ingestion</h3>
+        <ul class="step-items">
+          <li>Raw Excel assessment files ingested as-is</li>
+          <li>No transformations applied at this stage</li>
+          <li>Full audit trail preserved</li>
+          <li>Stored as Delta tables in Databricks</li>
+        </ul>
+      </div>
+      <div class="pipeline-step">
+        <span class="step-layer silver">Silver Layer</span>
+        <h3 class="step-title">Cleaned & Enriched</h3>
+        <ul class="step-items">
+          <li>Master assessment table constructed</li>
+          <li>Points lookup table joined</li>
+          <li>Enriched view combining all pupil attributes</li>
+          <li>Data types standardised, nulls handled</li>
+          <li>ARE status calculated and validated</li>
+        </ul>
+      </div>
+      <div class="pipeline-step">
+        <span class="step-layer gold">Gold Layer</span>
+        <h3 class="step-title">Aggregated Views</h3>
+        <ul class="step-items">
+          <li>Summary view by Year Group</li>
+          <li>Summary view by Gender</li>
+          <li>Summary view by Pupil Premium status</li>
+          <li>Summary view by EAL status</li>
+          <li>Summary view by Teaching Group</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER NAV -->
+  <div class="divider" style="max-width:1200px; margin: 0 auto;"></div>
+  <div class="project-footer">
+    <a href="index.html#projects" class="footer-back">Back to all projects</a>
+    <a href="gtc-dashboard.html" class="footer-next">Next project — GTC Sales &amp; Marketing Dashboard →</a>
+  </div>
+
+  <script>
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+    reveals.forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
