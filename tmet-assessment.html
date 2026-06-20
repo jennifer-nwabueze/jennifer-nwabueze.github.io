@@ -193,6 +193,46 @@
       background: var(--border);
     }
 
+    /* ── SERVICES DEMONSTRATED ── */
+    .services-strip {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--charcoal-mid);
+      padding: 2.2rem 4rem;
+    }
+    .services-strip > .inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    .services-strip-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+    .services-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.7rem;
+    }
+    .service-chip {
+      padding: 0.5rem 1.1rem;
+      border: 1px solid rgba(0,168,120,0.35);
+      border-radius: 100px;
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--emerald);
+      background: var(--emerald-glow);
+      letter-spacing: 0.01em;
+      white-space: nowrap;
+    }
+
     /* ── OVERVIEW GRID ── */
     .overview-grid {
       display: grid;
@@ -674,6 +714,19 @@
       </div>
     </div>
     <span class="hero-scroll">Scroll</span>
+  </div>
+
+  <!-- SERVICES DEMONSTRATED -->
+  <div class="services-strip">
+    <div class="inner">
+      <span class="services-strip-label">Services Demonstrated</span>
+      <div class="services-chips">
+        <span class="service-chip">ETL Pipeline Design</span>
+        <span class="service-chip">Data Quality &amp; Integrity</span>
+        <span class="service-chip">Data Analysis &amp; Insight</span>
+        <span class="service-chip">Storytelling with Data</span>
+      </div>
+    </div>
   </div>
 
   <!-- OVERVIEW -->
